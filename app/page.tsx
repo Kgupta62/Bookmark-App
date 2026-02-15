@@ -1,8 +1,10 @@
 import { createClient } from "@/supabase/server";
 import { BookmarkManager } from "@/components/BookmarkManager";
-import { SignIn } from "@/components/SignIn";
+import { SignInWithErrorHint } from "@/components/SignInWithErrorHint";
 
-export default async function Home() {
+export default async function Home(props: { searchParams?: Promise<{ error?: string }> | { error?: string } }) {
+  const searchParams = await Promise.resolve(props.searchParams ?? {});
+  const hasAuthError = searchParams && "error" in searchParams && searchParams.error === "auth";
   let user = null;
   try {
     const supabase = await createClient();
@@ -32,7 +34,7 @@ export default async function Home() {
           </div>
           <h1 className="text-2xl font-bold text-slate-800 mb-1">Smart Bookmark</h1>
           <p className="text-slate-500 text-sm mb-6">Save links. Private, synced in real time.</p>
-          <SignIn />
+          <SignInWithErrorHint hasAuthError={hasAuthError} />
         </div>
       </main>
     );
