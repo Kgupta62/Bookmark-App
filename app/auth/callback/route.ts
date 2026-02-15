@@ -12,6 +12,8 @@ export async function GET(req: Request) {
     if (!error) {
       return NextResponse.redirect(`${origin}${next}`);
     }
+    const msg = encodeURIComponent(error.message || "Exchange failed");
+    return NextResponse.redirect(`${origin}/?error=auth&msg=${msg}`);
   }
 
   return NextResponse.redirect(`${origin}/?error=auth`);
